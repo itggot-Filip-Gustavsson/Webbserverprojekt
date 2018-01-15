@@ -1,0 +1,40 @@
+- if @display
+
+- if session[:adminlevel] 
+    p Welcome #{@user} with permission level #{session[:adminlevel]}
+- else
+    p Welcome #{@user}
+br
+form action='/logout' method='post'
+    button type='submit' Logga ut
+br
+- if session[:adminlevel] > 3
+    h2 admin panel
+    -@adminpanel.each do |adminpanel|
+        form action='/changepermission' method='post'
+            p #{adminpanel}
+            select value="#{adminpanel[0]}" name="simple"
+                option 1 
+                option 2
+                option 3
+                option 4
+                option 5
+            button type='submit' change permission
+
+br
+h3 please enter the text you wanna store
+form action='/index' method='post'
+    textarea cols="30" rows="10" type='text' name='content'
+    button type='submit' Save!
+br
+h3 Things that you already have posted
+br
+
+- @display.each do |display|
+    form action='/remove' method='post'
+        p = display.first
+        input type="hidden" name="remove" value="#{display[1]}"
+        button type='submit' Remove 
+
+
+

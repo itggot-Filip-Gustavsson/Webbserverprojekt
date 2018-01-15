@@ -1,0 +1,14 @@
+form action='/login' method='post'
+    input type='text' name='username' placeholder='username'
+    input type='password' name='password' placeholder='password'
+    button type='submit' Login!
+
+-if @fail 
+    h2 #{@fail}
+
+h1 new to this website?
+a href="/register" register here!
+br
+form action='/logout' method='post'
+    button type='submit' Logga ut
+    

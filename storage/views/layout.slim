@@ -1,0 +1,39 @@
+doctype html
+html
+  head
+    meta content=("text/html; charset=UTF-8") http-equiv="Content-Type" /
+    title Projekt
+    link href="./css/projekt.css" rel="stylesheet" /
+    meta charset="utf-8" /
+  body
+    header
+      img.logga src="img/VSLE_LOGO4.png" /
+      .buttonnav onclick="dock(navi)" 
+        .streck
+        .streck
+        .streck
+    nav#navi.docked.hidden
+      a.navtext href="./index.html"  Hem
+      a.navtext href="./Projekt.html"  Projekt
+      a.navtext href="./kontakt.html"  Kontakt
+      a.navtext href="./om_oss.html"  Om oss
+    .container
+      aside
+        .sidemeny
+          a.sidemenytext href="./index.html"  Hem
+          .divider
+          a.sidemenytextaktiv href="./Projekt.html"  Projekt
+          .divider
+          a.sidemenytext href="./kontakt.html"  Kontakt
+          .divider
+          a.sidemenytext href="./om_oss.html"  Om oss
+      main
+        .top
+          h1.titel Storage
+        == yield
+        .footer
+          h1.copyrightweb © 2017 Kössö Bygg inc
+          h1.copyrightweb2 by Filip
+    footer
+      h1.copyright © 2017 Kössö Bygg inc
+      h1.copyright2 by Filip
