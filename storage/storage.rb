@@ -1,4 +1,4 @@
-require_relative: orm.rb
+#require_relative: "orm.rb"
 
 class App < Sinatra::Base
 
@@ -11,9 +11,9 @@ class App < Sinatra::Base
 		end
 		@user = session[:user]
 
-		@adminpanel = db.execute("SELECT id, username, permission FROM password")
+		@adminpanel = db.execute("SELECT id, username, permission FROM users")
 		
-		@userid = db.execute("SELECT id FROM password WHERE Username = ?", [@user])
+		@userid = db.execute("SELECT id FROM users WHERE Username = ?", [@user])
 		@display = db.execute("SELECT content, contentid FROM usercontent WHERE Userid = ?", [@userid])
 		slim :index
 	end
@@ -22,7 +22,7 @@ class App < Sinatra::Base
 		@user = session[:user]
 		content = params['content']
 		db = SQLite3::Database.open('db/login.sqlite')
-		@userid = db.execute("SELECT id FROM password WHERE Username = ?", [@user])
+		@userid = db.execute("SELECT id FROM users WHERE Username = ?", [@user])
 		db.execute("INSERT INTO usercontent(Userid, content) VALUES (?, ?) ", [@userid, content])
 
 		redirect '/index'
@@ -60,7 +60,7 @@ class App < Sinatra::Base
 		
 			db = SQLite3::Database.open('db/login.sqlite')
 
-			@existing_usernames = db.execute("SELECT Username FROM password")
+			@existing_usernames = db.execute("SELECT Username FROM users")
 
 			i = 0
 			while i != @existing_usernames.length
@@ -80,7 +80,7 @@ class App < Sinatra::Base
 
 			if @exist_user == false	
 				hash = BCrypt::Password.create(password)
-				db.execute("INSERT INTO password(Hash, Username, permission) VALUES (?, ?, ?) ", [hash, username, 0])	
+				db.execute("INSERT INTO users(Hash, Username, permission) VALUES (?, ?, ?) ", [hash, username, 0])	
 				redirect '/login'
 			elsif @exist_user == true
 				redirect '/register'
@@ -95,7 +95,7 @@ class App < Sinatra::Base
 		password = params['password']
 
 		db = SQLite3::Database.open('db/login.sqlite')
-		@existing_user = db.execute("SELECT Username, Hash FROM password WHERE Username = ?", [username])
+		@existing_user = db.execute("SELECT Username, Hash FROM users WHERE Username = ?", [username])
 
 		p @existing_user
 		if @existing_user == nil || @existing_user.empty?
@@ -103,7 +103,7 @@ class App < Sinatra::Base
 			redirect '/login'
 		elsif @existing_user[0][0] == username && BCrypt::Password.new(@existing_user[0][1]) == password
 			session[:user] = @existing_user[0][0]
-			@permission = db.execute('SELECT permission FROM password WHERE Username = ?', @existing_user[0][0])
+			@permission = db.execute('SELECT permission FROM users WHERE Username = ?', @existing_user[0][0])
 			session[:adminlevel] = @permission.first[0]
 			redirect '/index'
 		else
