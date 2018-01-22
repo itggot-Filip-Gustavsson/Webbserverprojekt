@@ -6,15 +6,15 @@ class App < Sinatra::Base
 
 	get '/index' do 
 		db = SQLite3::Database.open('db/login.sqlite')
-		if !session[:user]
-			redirect '/login'
-		end
 		@user = session[:user]
 
 		@adminpanel = db.execute("SELECT id, username, permission FROM users")
 		
 		@userid = db.execute("SELECT id FROM users WHERE Username = ?", [@user])
 		@display = db.execute("SELECT content, contentid FROM usercontent WHERE Userid = ?", [@userid])
+		if !session[:user]
+			redirect '/login'
+		end
 		slim :index
 	end
 
@@ -33,6 +33,19 @@ class App < Sinatra::Base
 		db = SQLite3::Database.open('db/login.sqlite')
 		db.execute("DELETE FROM usercontent WHERE contentid = ?", [contentid])
 		redirect '/index'
+	end
+
+	post '/removeuser' do
+		userid = params['remove']
+		db = SQLite3::Database.open('db/login.sqlite')
+		db.execute("DELETE FROM users WHERE id = ?", [userid])
+		db.execute("DELETE FROM usercontent WHERE Userid = ?", [userid])
+		redirect '/index'
+	end
+
+	post '/share' do 
+
+
 	end
 
 	get '/login' do 

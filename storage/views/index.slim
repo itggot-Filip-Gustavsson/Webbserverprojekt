@@ -20,6 +20,10 @@ br
                 option 4
                 option 5
             button type='submit' change permission
+        form action='/removeuser' method='post'
+            input type="hidden" name="remove" value="#{adminpanel[0]}"
+            button type='submit' Remove 
+            
 
 br
 h3 please enter the text you wanna store
@@ -35,8 +39,14 @@ br
         p = display.first
         input type="hidden" name="remove" value="#{display[1]}"
         button type='submit' Remove 
+    form action='/share' method='post'    
         input type="hidden" name="share" value="#{display[1]}"
         button type='submit' share 
+        select id="users" name="users"
+            -@adminpanel.each do |adminpanel|
+                option #{adminpanel[1]}
+
+
 br/
 br/
 h3 Posts that are shared with you
