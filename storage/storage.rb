@@ -7,11 +7,20 @@ class App < Sinatra::Base
 	get '/index' do 
 		db = SQLite3::Database.open('db/login.sqlite')
 		@user = session[:user]
+		@sharedcontent = []
 
 		@adminpanel = db.execute("SELECT id, username, permission FROM users")
 		
 		@userid = db.execute("SELECT id FROM users WHERE Username = ?", [@user])
 		@display = db.execute("SELECT content, contentid FROM usercontent WHERE Userid = ?", [@userid])
+		@sharedcontentid = db.execute("SELECT sharedcontentid FROM sharedcontent WHERE sharedto_userid = ?", [@userid])
+		@sharedby = db.execute("SELECT sharedby FROM sharedcontent  WHERE sharedto_userid = ?", [@userid])
+		
+
+		@sharedcontentid.each do |id|
+			@sharedcontent << db.execute("SELECT content FROM Usercontent WHERE contentid = ?", [id]).flatten
+		end
+		p @sharedcontent
 		if !session[:user]
 			redirect '/login'
 		end
@@ -44,8 +53,16 @@ class App < Sinatra::Base
 	end
 
 	post '/share' do 
+		contentid = params['share']
+		user = params['users']
+		sharedby = params['sharedby']
 
+		db = SQLite3::Database.open('db/login.sqlite')
+		userid = db.execute("SELECT id FROM users WHERE Username = ?", [user])
 
+		db.execute("INSERT INTO sharedcontent (sharedcontentid, sharedto_userid, sharedby) VALUES (?, ?, ?) ", [contentid, userid, sharedby])
+
+		redirect '/index'
 	end
 
 	get '/login' do 

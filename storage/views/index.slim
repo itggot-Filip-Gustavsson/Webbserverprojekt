@@ -41,7 +41,8 @@ br
         button type='submit' Remove 
     form action='/share' method='post'    
         input type="hidden" name="share" value="#{display[1]}"
-        button type='submit' share 
+        input type="hidden" name="sharedby" value="#{@user}"
+        button type='submit' share with
         select id="users" name="users"
             -@adminpanel.each do |adminpanel|
                 option #{adminpanel[1]}
@@ -50,4 +51,8 @@ br
 br/
 br/
 h3 Posts that are shared with you
+
+- @sharedcontent.each do |shared|
+        h4 shared by #{@sharedby[0].first}
+        p = shared.first
 
