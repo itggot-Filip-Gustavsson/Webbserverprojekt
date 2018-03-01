@@ -1,4 +1,5 @@
-#require_relative: "orm.rb"
+require_relative 'orm.rb'
+
 
 class App < Sinatra::Base
 
@@ -6,21 +7,17 @@ class App < Sinatra::Base
 
 	get '/index' do 
 		db = SQLite3::Database.open('db/login.sqlite')
-		@user = session[:user]
+		@user = User.one(session[:user])
 		@sharedcontent = []
-
 		@adminpanel = db.execute("SELECT id, username, permission FROM users")
-		
-		@userid = db.execute("SELECT id FROM users WHERE Username = ?", [@user])
-		@display = db.execute("SELECT content, contentid FROM usercontent WHERE Userid = ?", [@userid])
-		@sharedcontentid = db.execute("SELECT sharedcontentid FROM sharedcontent WHERE sharedto_userid = ?", [@userid])
-		@sharedby = db.execute("SELECT sharedby FROM sharedcontent  WHERE sharedto_userid = ?", [@userid])
+		@display = db.execute("SELECT content, contentid FROM usercontent WHERE Userid = ?", [@user.id])
+		@sharedcontentid = db.execute("SELECT sharedcontentid FROM sharedcontent WHERE sharedto_userid = ?", [@user.id])
+		@sharedby = db.execute("SELECT sharedby FROM sharedcontent  WHERE sharedto_userid = ?", [@user.id])
 		
 
 		@sharedcontentid.each do |id|
 			@sharedcontent << db.execute("SELECT content FROM Usercontent WHERE contentid = ?", [id]).flatten
 		end
-		p @sharedcontent
 		if !session[:user]
 			redirect '/login'
 		end
@@ -28,11 +25,10 @@ class App < Sinatra::Base
 	end
 
 	post '/index' do 
-		@user = session[:user]
+		@user = User.one(session[:user])
 		content = params['content']
 		db = SQLite3::Database.open('db/login.sqlite')
-		@userid = db.execute("SELECT id FROM users WHERE Username = ?", [@user])
-		db.execute("INSERT INTO usercontent(Userid, content) VALUES (?, ?) ", [@userid, content])
+		db.execute("INSERT INTO usercontent(Userid, content) VALUES (?, ?) ", [@user.id, content])
 
 		redirect '/index'
 	end	
@@ -41,14 +37,17 @@ class App < Sinatra::Base
 		contentid = params['remove']
 		db = SQLite3::Database.open('db/login.sqlite')
 		db.execute("DELETE FROM usercontent WHERE contentid = ?", [contentid])
+		db.execute("DELETE FROM sharedcontent WHERE sharedcontentid = ?", [contentid])
 		redirect '/index'
 	end
 
 	post '/removeuser' do
 		userid = params['remove']
+		@user = User.one(userid)
 		db = SQLite3::Database.open('db/login.sqlite')
-		db.execute("DELETE FROM users WHERE id = ?", [userid])
-		db.execute("DELETE FROM usercontent WHERE Userid = ?", [userid])
+		db.execute("DELETE FROM users WHERE id = ?", [@user.id])
+		db.execute("DELETE FROM usercontent WHERE Userid = ?", [@user.id])
+		db.execute("DELETE FROM sharedcontent WHERE sharedby = ?", [@user.username])
 		redirect '/index'
 	end
 
@@ -127,7 +126,6 @@ class App < Sinatra::Base
 		db = SQLite3::Database.open('db/login.sqlite')
 		@existing_user = db.execute("SELECT Username, Hash FROM users WHERE Username = ?", [username])
 
-		p @existing_user
 		if @existing_user == nil || @existing_user.empty?
 			session[:login_fail] = "Wrong username or password, Please try again"
 			redirect '/login'
@@ -146,8 +144,6 @@ class App < Sinatra::Base
 
 		newpermission = params['simple'].to_i
 		userid = params['value']
-		p newpermission
-		p userid
 
 		redirect '/index'
 	end
