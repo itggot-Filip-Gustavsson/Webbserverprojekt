@@ -9,14 +9,13 @@ class App < Sinatra::Base
 		db = SQLite3::Database.open('db/login.sqlite')
 		@user = User.one(session[:user])
 		@sharedcontent = []
-		@adminpanel = db.execute("SELECT id, username, permission FROM users")
-		@display = db.execute("SELECT content, contentid FROM usercontent WHERE Userid = ?", [@user.id])
+		@adminpanel = User.all
+		@usercontent = Usercontent.all(@user.id)
 		@sharedcontentid = db.execute("SELECT sharedcontentid FROM sharedcontent WHERE sharedto_userid = ?", [@user.id])
 		@sharedby = db.execute("SELECT sharedby FROM sharedcontent  WHERE sharedto_userid = ?", [@user.id])
 		
-
 		@sharedcontentid.each do |id|
-			@sharedcontent << db.execute("SELECT content FROM Usercontent WHERE contentid = ?", [id]).flatten
+			@sharedcontent << @usercontent.content
 		end
 		if !session[:user]
 			redirect '/login'

@@ -12,8 +12,8 @@ br
     h2 admin panel
     -@adminpanel.each do |adminpanel|
         form action='/changepermission' method='post'
-            p #{adminpanel}
-            select value="#{adminpanel[0]}" name="simple"
+            p #{adminpanel.username}
+            select value="#{adminpanel.permission}" name="simple"
                 option 1 
                 option 2
                 option 3
@@ -21,7 +21,7 @@ br
                 option 5
             button type='submit' change permission
         form action='/removeuser' method='post'
-            input type="hidden" name="remove" value="#{adminpanel[0]}"
+            input type="hidden" name="remove" value="#{adminpanel.id}"
             button type='submit' Remove 
             
 
@@ -34,18 +34,18 @@ br
 h3 Things that you already have posted
 br
 
-- @display.each do |display|
+ -@usercontent.each do |usercontent|
     form action='/remove' method='post'
-        p = display.first
-        input type="hidden" name="remove" value="#{display[1]}"
+        p #{usercontent.content}
+        input type="hidden" name="remove" value="#{usercontent.contentid}"
         button type='submit' Remove 
     form action='/share' method='post'    
-        input type="hidden" name="share" value="#{display[1]}"
+        input type="hidden" name="share" value="#{usercontent.contentid}"
         input type="hidden" name="sharedby" value="#{@user}"
         button type='submit' share with
         select id="users" name="users"
             -@adminpanel.each do |adminpanel|
-                option #{adminpanel[1]}
+                option #{adminpanel.username}
 
 
 br/
