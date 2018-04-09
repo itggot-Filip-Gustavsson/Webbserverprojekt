@@ -42,7 +42,6 @@ class Usercontent
         @Userid = user_array[0]
         @content = user_array[1]
         @contentid = user_array[2]
-        p @content
     end
 
     def self.from_array(array)
@@ -75,7 +74,7 @@ class Sharedcontent
         return array.map { |res| self.new(res) }
     end
 
-    def self.one(id)
+    def self.all(id)
         db = SQLite3::Database.open('db/login.sqlite')
         result_from_db = db.execute("SELECT * FROM sharedcontent WHERE sharedto_userid = ?", [id])
         return self.from_array(result_from_db)

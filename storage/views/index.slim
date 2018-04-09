@@ -51,9 +51,8 @@ br
 br/
 br/
 h3 Posts that are shared with you
-- i = 0 
+
 - @sharedcontent.each do |shared|
-        h4 shared by #{@sharedby[i].first}
-        p = shared.first
-        - i += 1
+        h4 shared by #{shared.sharedby}
+        
 
