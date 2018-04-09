@@ -4,4 +4,4 @@ Detta projekt är ett storage system med ett mång till många förhålande. Det
  
 De funktionerna som jag vill skapa till denna applikation är: Ett fungerande storage system med en tillhörande admin panel för de som har permission. ett kompis system dock endsast om jag får tid till det. Ett sharing system som ska bli intergrerat med kompis systemet om det implementeras 
 
-Här är också en läng till ER diagramet: http://prntscr.com/i23e9t
+Här är också en länk till ER diagramet: http://prntscr.com/i23e9t
