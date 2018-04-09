@@ -11,12 +11,12 @@ class App < Sinatra::Base
 		@sharedcontent = []
 		@adminpanel = User.all
 		@usercontent = Usercontent.all(@user.id)
-		@sharedcontentid = db.execute("SELECT sharedcontentid FROM sharedcontent WHERE sharedto_userid = ?", [@user.id])
-		@sharedby = db.execute("SELECT sharedby FROM sharedcontent  WHERE sharedto_userid = ?", [@user.id])
-		
-		@sharedcontentid.each do |id|
-			@sharedcontent << @usercontent.content
-		end
+		#@sharedcontentid = db.execute("SELECT sharedcontentid FROM sharedcontent WHERE sharedto_userid = ?", [@user.id])
+		#@sharedby = db.execute("SELECT sharedby FROM sharedcontent  WHERE sharedto_userid = ?", [@user.id])
+		@sharedcontent = Sharedcontent.one(@user.id)
+		p @sharedby = @sharedcontent.sharedby
+		@sharedcontentid = @sharedcontent.sharedcontentid
+
 		if !session[:user]
 			redirect '/login'
 		end

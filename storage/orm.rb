@@ -42,6 +42,7 @@ class Usercontent
         @Userid = user_array[0]
         @content = user_array[1]
         @contentid = user_array[2]
+        p @content
     end
 
     def self.from_array(array)
@@ -61,5 +62,25 @@ class Usercontent
     end
 end
 
+class Sharedcontent
+    attr_reader :sharedby, :sharedcontentid, :sharedto_userid
+
+    def initialize(user_array)
+        @sharedby = user_array[0]
+        @sharedcontentid = user_array[1]
+        @sharedto_userid = user_array[2]
+    end
+
+    def self.from_array(array)
+        return array.map { |res| self.new(res) }
+    end
+
+    def self.one(id)
+        db = SQLite3::Database.open('db/login.sqlite')
+        result_from_db = db.execute("SELECT * FROM sharedcontent WHERE sharedto_userid = ?", [id])
+        return self.from_array(result_from_db)
+    end
+
+end
 
 
