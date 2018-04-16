@@ -22,16 +22,15 @@ class User
         return self.new(result_from_db.first)
     end
 
+    def self.from_array(array)
+        return array.map { |res| self.new(res) }
+    end
+
     def self.all
         db = SQLite3::Database.open('db/login.sqlite')
         result_from_db2 = db.execute("SELECT * FROM users")
         
-        allusers = []
-        result_from_db2.each do |result|
-            allusers << self.new(result)
-        end
-       
-        return allusers
+        return self.from_array(result_from_db2)
     end
 end
 
@@ -41,9 +40,9 @@ class Usercontent
     def initialize(user_array)
         @Userid = user_array[0]
         @content = user_array[1]
-        @contentid = user_array[2]
+        @contentid =  user_array[2]
     end
-
+    
     def self.from_array(array)
         return array.map { |res| self.new(res) }
     end
