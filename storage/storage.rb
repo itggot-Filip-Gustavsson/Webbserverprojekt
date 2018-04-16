@@ -63,6 +63,7 @@ class App < Sinatra::Base
 	get '/login' do 
 		
 		@fail = session[:login_fail]
+
 		slim :login
 	end
 
