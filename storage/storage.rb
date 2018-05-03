@@ -1,4 +1,4 @@
-require_relative 'orm.rb'
+require_relative 'ORM/orm.rb'
 
 
 class App < Sinatra::Base
@@ -7,13 +7,16 @@ class App < Sinatra::Base
 
 	get '/index' do 
 		db = SQLite3::Database.open('db/login.sqlite')
-		@user = User.one(session[:user])
+		@user = Users.one(Users.column("Username"), session[:user])
 		@sharedcontent = []
-		@adminpanel = User.all
-		@usercontent = Usercontent.all(@user.id)
+		@adminpanel = Users.all
+		@usercontent = Usercontent.one(Usercontent.column("Userid"), @user.id).from_array
+		p @usercontent
 		#@sharedcontentid = db.execute("SELECT sharedcontentid FROM sharedcontent WHERE sharedto_userid = ?", [@user.id])
 		#@sharedby = db.execute("SELECT sharedby FROM sharedcontent  WHERE sharedto_userid = ?", [@user.id])
-		@sharedcontent = Sharedcontent.all(@user.id)
+		#@sharedcontent = Sharedcontent.all(@user.id)
+		#p @sharedcontent.sharedcontentid
+		#@sharedusercontent = Usercontent.one(@sharedcontent.sharedcontentid)
 		if !session[:user]
 			redirect '/login'
 		end

@@ -1,7 +1,15 @@
 require 'byebug'
 
-class User
+class User < Grillkorv
     attr_reader :id, :username, :hash, :permission 
+
+    #i subklasserna
+    table_name "users"
+    column 'id', 'integer'
+    column 'username', 'string'
+    column 'hash', 'string'
+    column 'permission', 'integer'
+
 
     def initialize(user_array)
         @id = user_array[0]
@@ -11,10 +19,29 @@ class User
         
     end
 
-    def self.one(user)
+    #i basklassen
+    def self.table_name(string)
+        @table_name = string
+    end
+
+    #i basklassen
+    def self.column(name, type, required)
+        @columns ||= {}
+        @columns[name] = type
+    end
+
+
+
+    # User.one({id: })
+    # User.one({username: "senap@grillkorv.com", last_login_date: Date.today})
+    # UserContent.one({user_id: 1})
+
+    # User.one('id', 1)
+    def self.one(column, value)
+
         db = SQLite3::Database.open('db/login.sqlite')
         if user.to_i.to_s == user
-            result_from_db = db.execute("SELECT * FROM users WHERE id = ?", [user])
+            result_from_db = db.execute("SELECT * FROM #{@table_name} WHERE #{column} = ?", value)
         else
             result_from_db = db.execute("SELECT * FROM users WHERE username = ?", [user])
         end
@@ -42,7 +69,7 @@ class Usercontent
         @content = user_array[1]
         @contentid =  user_array[2]
     end
-    
+
     def self.from_array(array)
         return array.map { |res| self.new(res) }
     end
@@ -56,7 +83,7 @@ class Usercontent
     def self.one(id)
         db = SQLite3::Database.open('db/login.sqlite')
         result_from_db = db.execute("SELECT * FROM usercontent WHERE contentid = ?", [id])
-        return self.new(result_from_db.first)
+        return self.from_array(result_from_db)
     end
 end
 
@@ -80,5 +107,4 @@ class Sharedcontent
     end
 
 end
-
 
