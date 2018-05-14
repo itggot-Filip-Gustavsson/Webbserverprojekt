@@ -13,15 +13,15 @@ br
     -@adminpanel.each do |adminpanel|
         form action='/changepermission' method='post'
             p #{adminpanel.username}
-            select value="#{adminpanel.permission}" name="simple"
+            select value="#{adminpanel.permission}" name="change permission"
                 option 1 
                 option 2
                 option 3
                 option 4
                 option 5
             button type='submit' change permission
-        form action='/removeuser' method='post'
-            input type="hidden" name="remove" value="#{adminpanel.id}"
+        form action='/user/#{adminpanel.id}" method='post'
+            input type="hidden" name="_method" value="delete"
             button type='submit' Remove 
             
 

@@ -107,8 +107,8 @@ class App < Sinatra::Base
 		redirect '/index'
 	end
 
-	post '/removeuser' do
-		userid = params['remove']
+	delete '/user/:id' do
+		userid = params['id']
 		@user = User.one(userid)
 		db = SQLite3::Database.open('db/login.sqlite')
 		db.execute("DELETE FROM users WHERE id = ?", [@user.id])
