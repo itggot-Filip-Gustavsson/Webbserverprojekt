@@ -14,8 +14,4 @@ class Sharedcontent < Orm
         @sharedto_userid = user_array[2]
     end
 
-    def self.from_array(array)
-        return array.map { |res| self.new(res) }
-    end
-
 end

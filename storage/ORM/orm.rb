@@ -18,12 +18,13 @@ class Orm
 
         db = SQLite3::Database.open('db/login.sqlite')
       
-        result_from_db = db.execute("SELECT * FROM #{@table_name} WHERE #{@column} = ?", value)
+        result_from_db = db.execute("SELECT * FROM #{@table_name} WHERE #{column} = ?", value)
        
-        if @table_name == 'usercontent'
-            return self.from_array(result_from_db)
+        if @table_name == 'Users' 
+            return self.news(result_from_db)
         else
-            return self.new(result_from_db)
+           return self.from_array(result_from_db)
+        end
     end
 
     def self.from_array(array)
@@ -32,9 +33,9 @@ class Orm
 
     def self.all
         db = SQLite3::Database.open('db/login.sqlite')
-        result_from_db2 = db.execute("SELECT * FROM #{@table_name}")
+        result_from_db = db.execute("SELECT * FROM #{@table_name}")
         
-        return self.from_array(result_from_db2)
+        return self.from_array(result_from_db)
     end
 end
 

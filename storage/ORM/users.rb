@@ -5,8 +5,8 @@ class Users < Orm
 
     table_name "users"
     column 'id'#, 'integer'
-    column 'username'#, 'string'
-    column 'hash'#, 'string'
+    column 'Username'#, 'string'
+    column 'Hash'#, 'string'
     column 'permission'#, 'integer'
 
     def initialize(user_array2)
@@ -18,8 +18,5 @@ class Users < Orm
         
     end
 
-    def self.from_array(array)
-        return array.map { |res| self.new(res) }
-    end
 
 end

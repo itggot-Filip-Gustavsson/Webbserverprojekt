@@ -1,7 +1,6 @@
 
 class Usercontent < Orm
-    attr_reader :id, :username, :hash, :permission
-
+    attr_reader :Userid, :content, :contentid
     table_name "usercontent"
     column 'Userid'#, 'integer'
     column 'content'#, 'string'
@@ -13,8 +12,5 @@ class Usercontent < Orm
         @contentid =  user_array[2]
     end
 
-    def self.from_array(array)
-        return array.map { |res| self.new(res) }
-    end
 
 end

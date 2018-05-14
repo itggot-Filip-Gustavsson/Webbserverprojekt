@@ -36,7 +36,7 @@ br
 
  -@usercontent.each do |usercontent|
     form action='/remove' method='post'
-        p #{usercontent.content}
+        p= usercontent.content
         input type="hidden" name="remove" value="#{usercontent.contentid}"
         button type='submit' Remove 
     form action='/share' method='post'    
@@ -53,7 +53,7 @@ br/
 h3 Posts that are shared with you
 
 - @sharedcontent.each do |shared|
-        h4 shared by #{shared.sharedby}
-        p #{@sharedusercontent.content}
+        / h4 shared by #{shared.sharedby}
+        / p #{@sharedusercontent.content}
         
 

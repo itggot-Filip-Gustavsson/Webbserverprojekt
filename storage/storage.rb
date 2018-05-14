@@ -6,13 +6,13 @@ class App < Sinatra::Base
 	enable :sessions
 
 	get '/index' do 
-		db = SQLite3::Database.open('db/login.sqlite')
-		@user = Users.one(Users.column("Username"), session[:user])
+	
+		@user = Users.one("Username", session[:user])
 		@sharedcontent = []
 		@adminpanel = Users.all
-		@usercontent = Usercontent.one(Usercontent.column("Userid"), @user.id).from_array
-		p @usercontent
-		#@sharedcontentid = db.execute("SELECT sharedcontentid FROM sharedcontent WHERE sharedto_userid = ?", [@user.id])
+		@usercontent = Usercontent.one("Userid", @user.id)
+		@sharedcontentid = Sharedcontent.one("sharedto_userid", @user.id) 
+		p @sharedcontentid
 		#@sharedby = db.execute("SELECT sharedby FROM sharedcontent  WHERE sharedto_userid = ?", [@user.id])
 		#@sharedcontent = Sharedcontent.all(@user.id)
 		#p @sharedcontent.sharedcontentid
