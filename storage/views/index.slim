@@ -35,9 +35,9 @@ h3 Things that you already have posted
 br
 
  -@usercontent.each do |usercontent|
-    form action='/remove' method='post'
+    form action="/content/#{usercontent.contentid}" method='post'
         p= usercontent.content
-        input type="hidden" name="remove" value="#{usercontent.contentid}"
+        input type="hidden" name="_method" value="delete"
         button type='submit' Remove 
     form action='/share' method='post'    
         input type="hidden" name="share" value="#{usercontent.contentid}"

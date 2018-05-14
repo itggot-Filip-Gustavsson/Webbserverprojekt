@@ -1,10 +1,10 @@
 require_relative 'ORM/orm.rb'
-
+require 'byebug'
 
 class App < Sinatra::Base
 
 	enable :sessions
-
+	use Rack::MethodOverride
 
 
 	before do
@@ -82,7 +82,7 @@ class App < Sinatra::Base
 		@adminpanel = Users.all
 		@usercontent = Usercontent.one("Userid", @user.id)
 		@sharedcontentid = Sharedcontent.one("sharedto_userid", @user.id) 
-		p @sharedcontentid
+		p @usercontent
 		#@sharedby = db.execute("SELECT sharedby FROM sharedcontent  WHERE sharedto_userid = ?", [@user.id])
 		#@sharedcontent = Sharedcontent.all(@user.id)
 		#p @sharedcontent.sharedcontentid
@@ -99,8 +99,8 @@ class App < Sinatra::Base
 		redirect '/index'
 	end	
 
-	post '/remove' do
-		contentid = params['remove']
+	delete '/content/:id' do
+		contentid = params['id']
 		db = SQLite3::Database.open('db/login.sqlite')
 		db.execute("DELETE FROM usercontent WHERE contentid = ?", [contentid])
 		db.execute("DELETE FROM sharedcontent WHERE sharedcontentid = ?", [contentid])
