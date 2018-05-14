@@ -5,69 +5,17 @@ class App < Sinatra::Base
 
 	enable :sessions
 
-	get '/index' do 
-	
-		@user = Users.one("Username", session[:user])
-		@sharedcontent = []
-		@adminpanel = Users.all
-		@usercontent = Usercontent.one("Userid", @user.id)
-		@sharedcontentid = Sharedcontent.one("sharedto_userid", @user.id) 
-		p @sharedcontentid
-		#@sharedby = db.execute("SELECT sharedby FROM sharedcontent  WHERE sharedto_userid = ?", [@user.id])
-		#@sharedcontent = Sharedcontent.all(@user.id)
-		#p @sharedcontent.sharedcontentid
-		#@sharedusercontent = Usercontent.one(@sharedcontent.sharedcontentid)
-		if !session[:user]
-			redirect '/login'
-		end
-		slim :index
-	end
 
-	post '/index' do 
-		@user = User.one(session[:user])
-		content = params['content']
-		db = SQLite3::Database.open('db/login.sqlite')
-		db.execute("INSERT INTO usercontent(Userid, content) VALUES (?, ?) ", [@user.id, content])
 
-		redirect '/index'
-	end	
-
-	post '/remove' do
-		contentid = params['remove']
-		db = SQLite3::Database.open('db/login.sqlite')
-		db.execute("DELETE FROM usercontent WHERE contentid = ?", [contentid])
-		db.execute("DELETE FROM sharedcontent WHERE sharedcontentid = ?", [contentid])
-		redirect '/index'
-	end
-
-	post '/removeuser' do
-		userid = params['remove']
-		@user = User.one(userid)
-		db = SQLite3::Database.open('db/login.sqlite')
-		db.execute("DELETE FROM users WHERE id = ?", [@user.id])
-		db.execute("DELETE FROM usercontent WHERE Userid = ?", [@user.id])
-		db.execute("DELETE FROM sharedcontent WHERE sharedby = ?", [@user.username])
-		redirect '/index'
-	end
-
-	post '/share' do 
-		contentid = params['share']
-		user = params['users']
-		sharedby = params['sharedby']
-
-		db = SQLite3::Database.open('db/login.sqlite')
-		userid = db.execute("SELECT id FROM users WHERE Username = ?", [user])
-
-		db.execute("INSERT INTO sharedcontent (sharedcontentid, sharedto_userid, sharedby) VALUES (?, ?, ?) ", [contentid, userid, sharedby])
-
-		redirect '/index'
-	end
-
-	get '/login' do 
+	before do
 		
-		@fail = session[:login_fail]
-
-		slim :login
+		if request.path == "/login" && "/register"
+	
+		else 
+			if !session[:user]
+				redirect '/login'
+			end
+		end
 	end
 
 	get '/register' do 
@@ -117,6 +65,72 @@ class App < Sinatra::Base
 		end	
 		
 	end
+
+	get '/login' do 
+		
+		@fail = session[:login_fail]
+
+		slim :login
+	end
+
+	
+
+	get '/index' do 
+	
+		@user = Users.one("Username", session[:user])
+		@sharedcontent = []
+		@adminpanel = Users.all
+		@usercontent = Usercontent.one("Userid", @user.id)
+		@sharedcontentid = Sharedcontent.one("sharedto_userid", @user.id) 
+		p @sharedcontentid
+		#@sharedby = db.execute("SELECT sharedby FROM sharedcontent  WHERE sharedto_userid = ?", [@user.id])
+		#@sharedcontent = Sharedcontent.all(@user.id)
+		#p @sharedcontent.sharedcontentid
+		#@sharedusercontent = Usercontent.one(@sharedcontent.sharedcontentid)
+		slim :index
+	end
+
+	post '/index' do 
+		@user = User.one(session[:user])
+		content = params['content']
+		db = SQLite3::Database.open('db/login.sqlite')
+		db.execute("INSERT INTO usercontent(Userid, content) VALUES (?, ?) ", [@user.id, content])
+
+		redirect '/index'
+	end	
+
+	post '/remove' do
+		contentid = params['remove']
+		db = SQLite3::Database.open('db/login.sqlite')
+		db.execute("DELETE FROM usercontent WHERE contentid = ?", [contentid])
+		db.execute("DELETE FROM sharedcontent WHERE sharedcontentid = ?", [contentid])
+		redirect '/index'
+	end
+
+	post '/removeuser' do
+		userid = params['remove']
+		@user = User.one(userid)
+		db = SQLite3::Database.open('db/login.sqlite')
+		db.execute("DELETE FROM users WHERE id = ?", [@user.id])
+		db.execute("DELETE FROM usercontent WHERE Userid = ?", [@user.id])
+		db.execute("DELETE FROM sharedcontent WHERE sharedby = ?", [@user.username])
+		redirect '/index'
+	end
+
+	post '/share' do 
+		contentid = params['share']
+		user = params['users']
+		sharedby = params['sharedby']
+
+		db = SQLite3::Database.open('db/login.sqlite')
+		userid = db.execute("SELECT id FROM users WHERE Username = ?", [user])
+
+		db.execute("INSERT INTO sharedcontent (sharedcontentid, sharedto_userid, sharedby) VALUES (?, ?, ?) ", [contentid, userid, sharedby])
+
+		redirect '/index'
+	end
+
+	
 
 	post '/login' do
 		session.destroy 

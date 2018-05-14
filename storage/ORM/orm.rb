@@ -20,8 +20,8 @@ class Orm
       
         result_from_db = db.execute("SELECT * FROM #{@table_name} WHERE #{column} = ?", value)
        
-        if @table_name == 'Users' 
-            return self.news(result_from_db)
+        if @table_name == 'users' 
+            return self.new(result_from_db)
         else
            return self.from_array(result_from_db)
         end
