@@ -9,7 +9,7 @@ class App < Sinatra::Base
 
 	before do
 		
-		if request.path == "/login" && "/register"
+		if request.path == "/login" || "/register"
 	
 		else 
 			if !session[:user]
@@ -81,8 +81,15 @@ class App < Sinatra::Base
 		@sharedcontent = []
 		@adminpanel = Users.all
 		@usercontent = Usercontent.one("Userid", @user.id)
-		@sharedcontentid = Sharedcontent.one("sharedto_userid", @user.id) 
-		p @usercontent
+		@sharedby = Sharedcontent.one("sharedto_userid", @user.id) 
+		@sharedby.each do |sharedby|
+
+			@sharedcontent << Usercontent.one("contentid", sharedby.sharedcontentid)
+
+		end
+
+	
+	
 		#@sharedby = db.execute("SELECT sharedby FROM sharedcontent  WHERE sharedto_userid = ?", [@user.id])
 		#@sharedcontent = Sharedcontent.all(@user.id)
 		#p @sharedcontent.sharedcontentid
@@ -108,7 +115,7 @@ class App < Sinatra::Base
 	end
 
 	delete '/user/:id' do
-		userid = params['id']
+		userid = params['remove']
 		@user = User.one(userid)
 		db = SQLite3::Database.open('db/login.sqlite')
 		db.execute("DELETE FROM users WHERE id = ?", [@user.id])

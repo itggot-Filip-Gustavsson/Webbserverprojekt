@@ -20,7 +20,7 @@ br
                 option 4
                 option 5
             button type='submit' change permission
-        form action='/user/#{adminpanel.id}" method='post'
+        form action="/user/#{adminpanel.id}" method='post'
             input type="hidden" name="_method" value="delete"
             button type='submit' Remove 
             
@@ -52,8 +52,13 @@ br/
 br/
 h3 Posts that are shared with you
 
-- @sharedcontent.each do |shared|
-        / h4 shared by #{shared.sharedby}
-        / p #{@sharedusercontent.content}
+- p @sharedcontent.first
+
+- @sharedby.each do |shared|
+         h4 shared by #{shared.sharedby}
+         
+
+       
+
         
 

@@ -1,7 +1,7 @@
-
+require 'byebug'
 
 class Sharedcontent < Orm
-    attr_reader :id, :username, :hash, :permission
+    attr_reader :sharedby, :sharedcontentid, :sharedto_userid
 
     table_name "sharedcontent"
     column 'sharedby' #, 'integer'
