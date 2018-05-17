@@ -17,7 +17,8 @@ class Orm
     def self.one(column, value)
 
         db = SQLite3::Database.open('db/login.sqlite')
-      
+        
+        
         result_from_db = db.execute("SELECT * FROM #{@table_name} WHERE #{column} = ?", value)
        
         if @table_name == 'users' 
@@ -31,11 +32,19 @@ class Orm
         return array.map { |res| self.new(res) }
     end
 
-    def self.all
+    def self.all(column, value, jointable = nil)
         db = SQLite3::Database.open('db/login.sqlite')
-        result_from_db = db.execute("SELECT * FROM #{@table_name}")
-        
-        return self.from_array(result_from_db)
+
+        if jointable == nil
+
+            result_from_db = db.execute("SELECT * FROM #{@table_name} WHERE #{column} = ?", value)
+            
+            return self.from_array(result_from_db)
+        else 
+            result_from_db = db.execute("SELECT * FROM #{@table_name} INNER JOIN #{jointable} on #{@table_name}.id = #{jointable}.id")
+
+            return self.from_array(result_from_db)
+        end
     end
 end
 

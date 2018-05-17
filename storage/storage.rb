@@ -78,22 +78,20 @@ class App < Sinatra::Base
 	get '/index' do 
 	
 		@user = Users.one("Username", session[:user])
-		@sharedcontent = []
-		@adminpanel = Users.all
-		@usercontent = Usercontent.one("Userid", @user.id)
-		@sharedby = Sharedcontent.one("sharedto_userid", @user.id) 
-		@sharedby.each do |sharedby|
+		@adminpanel = Users.all("Username", "%")
+		@sharedcontent = Sharedcontent.all("usercontent", 3, 'usercontent')
+		#@usercontent = Usercontent.all("userid", @user.id)
+		#@sharedby = Sharedcontent.all("sharedto_userid", @user.id) 
+		
+		
 
-			@sharedcontent << Usercontent.one("contentid", sharedby.sharedcontentid)
-
-		end
-
+		p @sharedcontent
 	
 	
 		#@sharedby = db.execute("SELECT sharedby FROM sharedcontent  WHERE sharedto_userid = ?", [@user.id])
 		#@sharedcontent = Sharedcontent.all(@user.id)
-		#p @sharedcontent.sharedcontentid
-		#@sharedusercontent = Usercontent.one(@sharedcontent.sharedcontentid)
+		#p @sharedcontent.id
+		#@sharedusercontent = Usercontent.one(@sharedcontent.id)
 		slim :index
 	end
 
@@ -101,7 +99,7 @@ class App < Sinatra::Base
 		@user = User.one(session[:user])
 		content = params['content']
 		db = SQLite3::Database.open('db/login.sqlite')
-		db.execute("INSERT INTO usercontent(Userid, content) VALUES (?, ?) ", [@user.id, content])
+		db.execute("INSERT INTO usercontent(userid, content) VALUES (?, ?) ", [@user.id, content])
 
 		redirect '/index'
 	end	
@@ -109,8 +107,8 @@ class App < Sinatra::Base
 	delete '/content/:id' do
 		contentid = params['id']
 		db = SQLite3::Database.open('db/login.sqlite')
-		db.execute("DELETE FROM usercontent WHERE contentid = ?", [contentid])
-		db.execute("DELETE FROM sharedcontent WHERE sharedcontentid = ?", [contentid])
+		db.execute("DELETE FROM usercontent WHERE id = ?", [contentid])
+		db.execute("DELETE FROM sharedcontent WHERE id = ?", [contentid])
 		redirect '/index'
 	end
 
@@ -119,7 +117,7 @@ class App < Sinatra::Base
 		@user = User.one(userid)
 		db = SQLite3::Database.open('db/login.sqlite')
 		db.execute("DELETE FROM users WHERE id = ?", [@user.id])
-		db.execute("DELETE FROM usercontent WHERE Userid = ?", [@user.id])
+		db.execute("DELETE FROM usercontent WHERE userid = ?", [@user.id])
 		db.execute("DELETE FROM sharedcontent WHERE sharedby = ?", [@user.username])
 		redirect '/index'
 	end
@@ -132,7 +130,7 @@ class App < Sinatra::Base
 		db = SQLite3::Database.open('db/login.sqlite')
 		userid = db.execute("SELECT id FROM users WHERE Username = ?", [user])
 
-		db.execute("INSERT INTO sharedcontent (sharedcontentid, sharedto_userid, sharedby) VALUES (?, ?, ?) ", [contentid, userid, sharedby])
+		db.execute("INSERT INTO sharedcontent (id, sharedto_userid, sharedby) VALUES (?, ?, ?) ", [contentid, userid, sharedby])
 
 		redirect '/index'
 	end

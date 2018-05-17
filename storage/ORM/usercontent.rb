@@ -1,15 +1,15 @@
 
 class Usercontent < Orm
-    attr_reader :Userid, :content, :contentid
+    attr_reader :userid, :content, :id
     table_name "usercontent"
-    column 'Userid'#, 'integer'
+    column 'userid'#, 'integer'
     column 'content'#, 'string'
-    column 'contentid'#, 'integer'
+    column 'id'#, 'integer'
 
     def initialize(user_array)
-        @Userid = user_array[0]
+        @userid = user_array[0]
         @content = user_array[1]
-        @contentid =  user_array[2]
+        @id =  user_array[2]
     end
 
 
