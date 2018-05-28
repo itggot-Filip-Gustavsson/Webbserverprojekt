@@ -35,12 +35,12 @@ h3 Things that you already have posted
 br
 
  -@usercontent.each do |usercontent|
-    form action="/content/#{usercontent.contentid}" method='post'
+    form action="/content/#{usercontent.id}" method='post'
         p= usercontent.content
         input type="hidden" name="_method" value="delete"
         button type='submit' Remove 
     form action='/share' method='post'    
-        input type="hidden" name="share" value="#{usercontent.contentid}"
+        input type="hidden" name="share" value="#{usercontent.id}"
         input type="hidden" name="sharedby" value="#{@user}"
         button type='submit' share with
         select id="users" name="users"
@@ -53,8 +53,9 @@ br/
 h3 Posts that are shared with you
 
 
-- @sharedby.each do |shared|
+- @sharedcontent.each do |shared|
          h4 shared by #{shared.sharedby}
+         p #{shared.content}
          
 
          

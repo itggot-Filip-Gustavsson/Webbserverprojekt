@@ -18,6 +18,8 @@ require_relative 'ORM/orm.rb'
 require_relative 'ORM/sharedcontent'
 require_relative 'ORM/users'
 require_relative 'ORM/usercontent'
+require_relative 'ORM/joinedcontent'
+require_relative 'ORM/joinedshared'
 #Run the application
 run App
 

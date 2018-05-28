@@ -9,8 +9,8 @@ class Users < Orm
     column 'Hash'#, 'string'
     column 'permission'#, 'integer'
 
-    def initialize(user_array2)
-        user_array = user_array2.first
+    def initialize(user_array)
+        #user_array = user_array2.first
         @id = user_array[0]
         @username = user_array[1]
         @hash = user_array[2]

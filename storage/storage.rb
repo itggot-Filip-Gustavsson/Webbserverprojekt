@@ -78,28 +78,21 @@ class App < Sinatra::Base
 	get '/index' do 
 	
 		@user = Users.one("Username", session[:user])
-		@adminpanel = Users.all("Username", "%")
-		@sharedcontent = Sharedcontent.all("usercontent", 3, 'usercontent')
-		#@usercontent = Usercontent.all("userid", @user.id)
-		#@sharedby = Sharedcontent.all("sharedto_userid", @user.id) 
-		
-		
+		session[:userid] = @user.id
+		@adminpanel = Users.everything()
+		@usercontent = Joinedcontent.all("userid", @user.id, 'usercontent')
+		@sharedcontent = Joinedcontent.all("sharedto_userid", @user.id, 'usercontent')
 
-		p @sharedcontent
 	
 	
-		#@sharedby = db.execute("SELECT sharedby FROM sharedcontent  WHERE sharedto_userid = ?", [@user.id])
-		#@sharedcontent = Sharedcontent.all(@user.id)
-		#p @sharedcontent.id
-		#@sharedusercontent = Usercontent.one(@sharedcontent.id)
 		slim :index
 	end
 
 	post '/index' do 
-		@user = User.one(session[:user])
+		@user = Users.one("Username", session[:user])
 		content = params['content']
-		db = SQLite3::Database.open('db/login.sqlite')
-		db.execute("INSERT INTO usercontent(userid, content) VALUES (?, ?) ", [@user.id, content])
+		#db.execute("INSERT INTO usercontent(userid, content) VALUES (?, ?) ", [@user.id, content])
+		Usercontent.insert("userid, content", "#{@user.id}", "#{content}")
 
 		redirect '/index'
 	end	
@@ -113,12 +106,13 @@ class App < Sinatra::Base
 	end
 
 	delete '/user/:id' do
-		userid = params['remove']
-		@user = User.one(userid)
+		userid = params['id']
 		db = SQLite3::Database.open('db/login.sqlite')
-		db.execute("DELETE FROM users WHERE id = ?", [@user.id])
-		db.execute("DELETE FROM usercontent WHERE userid = ?", [@user.id])
-		db.execute("DELETE FROM sharedcontent WHERE sharedby = ?", [@user.username])
+		@deleteuser = Users.one("id", userid)
+		Users.delete("id", @deleteuser.id)
+		Sharedcontent.delete("id", @deleteuser.id)
+		Usercontent.delete("userid", @deleteuser.id)
+	
 		redirect '/index'
 	end
 
